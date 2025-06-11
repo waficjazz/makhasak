@@ -1,4 +1,3 @@
-// wait for the DOM to load before running the script
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("stroke").value = "#000000";
   document.getElementById("lineWidth").value = "5";
@@ -7,11 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const toolbar = document.getElementById("toolbar");
   const ctx = canvas.getContext("2d");
 
-  const canvasOffsetX = canvas.offsetLeft;
-  const canvasOffsetY = canvas.offsetTop;
-
-  canvas.width = window.innerWidth - canvasOffsetX;
-  canvas.height = window.innerHeight - canvasOffsetY;
+  function resizeCanvas() {
+    const toolbarWidth = toolbar.offsetWidth;
+    canvas.width = window.innerWidth - toolbarWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
 
   let isPainting = false;
   let lineWidth = 5;
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.lineWidth = lineWidth;
     ctx.lineCap = "round";
 
-    ctx.lineTo(e.clientX - canvasOffsetX, e.clientY);
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY);
     ctx.stroke();
   };
 
@@ -60,6 +61,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   canvas.addEventListener("mousemove", draw);
 
-}
-);
+  const container = document.querySelector('.container');
+
+  const toggleBtn = document.createElement('button');
+  toggleBtn.textContent = "Show Drawing Board";
+  toggleBtn.id = "toggle-canvas-btn";
+  document.body.insertBefore(toggleBtn, container);
+
+  container.style.display = "none";
+
+  toggleBtn.addEventListener("click", () => {
+    if (container.style.display === "none") {
+      container.style.display = "flex";
+      toggleBtn.textContent = "Hide Drawing Board";
+      
+      resizeCanvas();
+    } else {
+      container.style.display = "none";
+      toggleBtn.textContent = "Show Drawing Board";
+    }
+  });
+});
 

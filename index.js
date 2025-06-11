@@ -1,56 +1,65 @@
-const canvas = document.getElementById("drawing-board");
-const toolbar = document.getElementById("toolbar");
-const ctx = canvas.getContext("2d");
+// wait for the DOM to load before running the script
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("stroke").value = "#000000";
+  document.getElementById("lineWidth").value = "5";
 
-const canvasOffsetX = canvas.offsetLeft;
-const canvasOffsetY = canvas.offsetTop;
+  const canvas = document.getElementById("drawing-board");
+  const toolbar = document.getElementById("toolbar");
+  const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
+  const canvasOffsetX = canvas.offsetLeft;
+  const canvasOffsetY = canvas.offsetTop;
 
-let isPainting = false;
-let lineWidth = 5;
-let startX;
-let startY;
+  canvas.width = window.innerWidth - canvasOffsetX;
+  canvas.height = window.innerHeight - canvasOffsetY;
 
-toolbar.addEventListener("click", (e) => {
-  if (e.target.id === "clear") {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-});
+  let isPainting = false;
+  let lineWidth = 5;
+  let startX;
+  let startY;
 
-toolbar.addEventListener("change", (e) => {
-  if (e.target.id === "stroke") {
-    ctx.strokeStyle = e.target.value;
-  }
+  toolbar.addEventListener("click", (e) => {
+    if (e.target.id === "clear") {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  });
 
-  if (e.target.id === "lineWidth") {
-    lineWidth = e.target.value;
-  }
-});
+  toolbar.addEventListener("change", (e) => {
+    if (e.target.id === "stroke") {
+      ctx.strokeStyle = e.target.value;
+    }
 
-const draw = (e) => {
-  if (!isPainting) {
-    return;
-  }
+    if (e.target.id === "lineWidth") {
+      lineWidth = e.target.value;
+    }
+  });
 
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = "round";
+  const draw = (e) => {
+    if (!isPainting) {
+      return;
+    }
 
-  ctx.lineTo(e.clientX - canvasOffsetX, e.clientY);
-  ctx.stroke();
-};
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = "round";
 
-canvas.addEventListener("mousedown", (e) => {
-  isPainting = true;
-  startX = e.clientX;
-  startY = e.clientY;
-});
+    ctx.lineTo(e.clientX - canvasOffsetX, e.clientY);
+    ctx.stroke();
+  };
 
-canvas.addEventListener("mouseup", (e) => {
-  isPainting = false;
-  ctx.stroke();
-  ctx.beginPath();
-});
+  canvas.addEventListener("mousedown", (e) => {
+    isPainting = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
 
-canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", (e) => {
+    isPainting = false;
+    ctx.stroke();
+    ctx.beginPath();
+  });
+
+  canvas.addEventListener("mousemove", draw);
+
+}
+);
+
